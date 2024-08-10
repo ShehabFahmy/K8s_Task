@@ -1,0 +1,38 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: cron-job-task
+spec:
+  schedule: "*/3 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          volumes:
+          - name: local-storage
+            persistentVolumeClaim:
+              claimName: pvc-task
+          - name: cm-volume
+            configMap:
+              name: cm-task
+          containers:
+          - name: ubuntu
+            image: ubuntu
+            imagePullPolicy: IfNotPresent
+            command: ["/bin/bash", "-c"]
+            args:
+            - |
+              # Copy the file out of the ConfigMap Volume as it is Read-only
+              # cp /home/my-storage/scripts/script.sh /home/my-storage/
+              # Make the script executable
+              # chmod +x /home/my-storage/script.sh
+              # Run the script
+              bash /home/my-storage/scripts/script.sh
+              # Keep the container running for an hour
+              # sleep 3600
+            volumeMounts:
+            - name: local-storage
+              mountPath: /home/my-storage      
+            - name: cm-volume
+              mountPath: /home/my-storage/scripts
+          restartPolicy: OnFailure
