@@ -1,4 +1,5 @@
 Create a CronJob that runs a Python script every 3 minutes. The script is stored in a ConfigMap and modifies a file in a Persistent Volume (PV) attached to the pod as a Persistent Volume Claim (PVC) with hostPath. After modifying the script, you will check the changes in the file stored in the PV.
+![Image](image.png)
 ## Shell Script
 - `pv.yaml`:
 ```yaml
